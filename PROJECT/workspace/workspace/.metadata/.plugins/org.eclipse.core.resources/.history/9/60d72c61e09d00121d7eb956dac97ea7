@@ -1,0 +1,52 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+
+<script type="text/javascript">
+
+function validate()
+{
+	
+	var site = encodeURIComponent("Site2SMS");
+	var usr =encodeURIComponent($("#usr").val());
+	var pwd = encodeURIComponent($("#pwd").val());
+	var to = encodeURIComponent($("#to").val());
+            var mes = encodeURIComponent($("#mes").val());
+            var gui = encodeURIComponent($("#gui").val());
+            
+	var dataString = 'site='+ site+ '&usr=' + usr + '&pwd=' + pwd + '&to=' + to+ '&mes=' + mes + '&gui=' + gui;
+	
+	
+		$.ajax({
+		type: "POST",
+		url: "smsapi.php",
+		data: dataString,
+		success: function(data){
+			 $('#sent').html(data);
+			  }
+		});
+	
+	return false;
+});
+
+	
+	
+	
+	}
+
+
+
+</script>
+
+
+</head>
+
+
+<body>
+
+</body>
+</html>

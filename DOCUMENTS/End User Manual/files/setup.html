@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>How to setup</title>
+</head>
+
+<body >
+<p align='right'><strong><a href="../End User Manual.html">Go to main menu</a></strong></p>
+<p align='center' style='font-size:26'><strong>SETUP GUIDE</strong></p><br />
+<p style='font-size:22'><b> How to setup project  </b></p>
+<br />
+
+ <pre style='font-size:20'>
+<b>Tools To Be Installed</b>
+	Install Eclipse J2EE in the system. 
+	Install DB2 9.7 in the system.
+	Install Apache Tomcat 7.0 in the system. 
+
+
+<b>User and Password</b>
+	Create a new user Rakesh with password Rakesh  in the Windows and install all these tools inside the user and give him all the administrator privileges in order to get access to all the features of the tools.
+                                                    OR
+	Use existing user and change the ddl and jdbc connection statements in jsp pages to the existing user and password.
+
+
+<b>Eclipse Project</b>
+	Unzip the workspace from the folder : /Crazy Four/Project 
+	Import the extracted  dynamic web project  OnlineBook  from the workspace or the  OnlineBook.war  into  Eclipse. 
+	Copy the folder : /Crazy Four/Project/Uploaded Images into C:/ .
+
+
+<b>Database</b>
+	The name of the database to be created is Books
+	Restore the database Books from the backup file inside Database folder.
+	Another  way of installing the database would be running the Books.ddl file provided inside the folder Database in the newly created database Books. Then you can load all the .data files corresponding to a particular table inside the tables.(.data files are available inside Database/Data folder)
+
+
+<b>Eclipse Project Configuration</b>
+	Configure the project with Apache Tomcat 7.0
+	Also various drivers are available in the folder Drivers
+	Configure the Eclipse project with Database Development Perspective and development a new DB2 connection  using  drivers  db2jcc.jar and db2license_cu.jar available inside Project/Drivers folder  and enter database name as Books with username Rakesh and password Rakesh.
+
+
+<b>Login Details:</b>
+
+Administrator:
+Username: admin
+Password: admin
+Login at adminlogin.jsp
+
+Registered User:
+Username: Rakesh
+Password: rakesh
+Login at index.jsp
+
+Corporate User:
+Username: vjti
+Password: asdfgh
+Login at corpuser.html
+
+</pre>
+</body>
+
+</html>

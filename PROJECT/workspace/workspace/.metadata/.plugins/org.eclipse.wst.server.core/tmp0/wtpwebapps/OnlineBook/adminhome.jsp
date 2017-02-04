@@ -1,0 +1,45 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Admin Home</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	%>
+	</div>
+<br><br><br><center>
+<ul list-style-type="none">
+<li><a href="adminprofile.jsp">Profile</a><br><br>
+<li><a href="users.jsp">View Users</a><br><br>
+<li><a href="viewcategories.jsp">View Categories</a><br><br>
+<li><a href="viewbooks.jsp">View Books</a><br><br>
+<li><a href="viewfeedback.jsp">View Feedbacks</a><br><br>
+<li><a href="viewforum.jsp">View Forum</a><br><br>
+<li><a href="viewnews.jsp">View News</a><br><br>
+<li><a href="viewads.jsp">View Ads</a><br><br>
+<li><a href="vieworders.jsp">View Orders</a><br><br>
+<li><a href="viewnotify.jsp">View Requests</a><br><br>
+<li><a href="addcorpuser.jsp">Add Corporate Users</a><br><br>
+<li><a href="addcategory.jsp">Add Categories</a><br><br>
+<li><a href="addbooks.jsp">Add Books</a><br><br>
+<li><a href="addnews.jsp">Add News</a><br><br>
+<li><a href="addadvertisement.jsp">Add Advertisement</a><br><br>
+</ul>
+</center>
+</body>
+</html>
+<%
+}
+else
+{
+out.println("Please Login");
+}
+%>

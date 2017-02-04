@@ -1,0 +1,26 @@
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="java.net.*"%>
+<%
+
+try{
+	
+	String _userName = "8976358948";
+
+	 String _password = "1521329";
+
+     String _url = "http://madsmsapi.tk/smsapi.php";
+
+	 String charset = "UTF-8";
+
+	String testPhoneNo = "8976358948";
+
+	String testMessage = "test";
+	
+}
+catch(Exception e)
+{
+	e.printStackTrace();
+}
+%>

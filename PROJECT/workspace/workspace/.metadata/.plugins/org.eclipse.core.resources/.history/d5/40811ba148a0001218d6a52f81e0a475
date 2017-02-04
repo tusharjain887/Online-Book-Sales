@@ -1,0 +1,65 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Users</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	%>
+	</div>
+<br><br><br><br><br><center>
+<a href="users.jsp">View Users</a>
+<a href="viewbooks.jsp">View Books</a>
+<table cellpadding=10 text-align=center>
+<tr>
+<td>Category Id</td>
+<td>Name</td>
+<td>Description</td>
+<td>Delete</td>
+</tr>
+<%
+int check=0;
+try{
+	Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	Connection Conn=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps=Conn.prepareStatement("SELECT * FROM CATEGORY"); 
+	ResultSet rs=ps.executeQuery();
+	while(rs.next()) 
+    {
+		 out.println("<tr>");
+		 	out.println("<td>"+rs.getString(1)+"</td>");
+		 	out.println("<td>"+rs.getString(2)+"</td>");
+		 	out.println("<td>"+rs.getString(2)+"</td>");
+		 	%>
+		 	<form name="form1" method="post" action="delete.jsp">
+		 	<input type="HIDDEN" name="catid" value=<%=rs.getString(1)%>>
+		 	<input type="HIDDEN" name="conid" value="no">
+		 	<input type="HIDDEN" name="adid" value="no">
+		 	<input type="HIDDEN" name="newsid" value="no">
+		 	<td><input type="SUBMIT" name="SUBMIT" value="Delete"></td>
+		 	</form>
+		 	<%
+		 	out.println("</tr>");
+    }
+	ps.close();
+	Conn.close(); 
+	}
+	catch(Exception ex){
+	    out.println(ex);
+	}
+}
+else
+{
+out.println("Please Login");
+}
+%>

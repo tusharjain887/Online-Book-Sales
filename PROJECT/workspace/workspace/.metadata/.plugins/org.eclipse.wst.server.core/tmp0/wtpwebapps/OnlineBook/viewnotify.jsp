@@ -1,0 +1,114 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="javax.mail.*" %>
+<%@ page import="javax.mail.internet.*" %>
+<%@ page import="javax.activation.*,javax.mail.internet.MimeMessage.RecipientType" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>View Requests</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	%>
+	</div>
+<br><br><br><br><br><center>
+<a href="adminhome.jsp">Go To Home</a>
+<table cellpadding=10 text-align=center>
+<tr>
+<td>Username</td>
+<td>BookId</td>
+<td>Book Name</td>
+<td>Send Email</td>
+<td>Send SMS</td>
+<td>Delete</td>
+</tr>
+<%
+String email = null;
+String mobile = null;
+String mob=null;
+String bookname=null;
+int check=0;
+Connection Conn=null;
+
+try{
+	Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	Conn=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps=Conn.prepareStatement("SELECT * FROM NOTIFY"); 
+	ResultSet rs=ps.executeQuery();
+	while(rs.next()) 
+    {
+		 out.println("<tr>");
+		 	out.println("<td>"+rs.getString(1)+"</td>");
+		 	out.println("<td>"+rs.getString(2)+"</td>");
+		 	PreparedStatement ps3=Conn.prepareStatement("SELECT BOOK_NAME FROM BOOKS WHERE BOOK_ID='"+rs.getString(2)+"'"); 
+			ResultSet rs3=ps3.executeQuery();
+			if(rs3.next()) 
+			{
+				bookname=rs3.getString(1);
+				out.println("<td>"+rs3.getString(1)+"</td>");
+			}
+    PreparedStatement ps1=Conn.prepareStatement("SELECT CONTACT_NO FROM USERS WHERE USERNAME='"+rs.getString(1)+"'"); 
+	ResultSet rs1=ps1.executeQuery();
+	if(rs1.next()) 
+	{		
+		mobile=rs1.getString(1);
+		mob="0"+mobile;
+	}
+	if(mobile!=null)
+	{
+		String TEXT ="Your requested book "+bookname+" is now available";
+ check=1;
+ out.println(check);
+ if(check==1)
+ {
+	 check++;
+	 out.println(check);
+ %>
+ <form name="form1" method="post" action="sendnotify.jsp"> 	
+		 	<input type="HIDDEN" name="username" value=<%=rs.getString(1)%>>
+		 	<input type="HIDDEN" name="bookname" value=<%=bookname%>>
+		 	<td><input type="SUBMIT" name="SUBMIT" value="Send Email"></td>
+		 	</form>
+ <td><a href="http://api.mVaayoo.com/mvaayooapi/MessageCompose?user=gauravahire28@gmail.com:system&senderID=TEST SMS&receipientno=<%=mob %>&dcs=0&msgtxt=<%=TEXT %>&state=0" target="_blank">Send SMS</a>
+ </td>
+ <%
+ }
+	}
+	else
+	{
+		out.println("Wrong Mobile no or email id");
+	}
+	%>
+		 	<form name="form1" method="post" action="deletenotify.jsp"> 	
+		 	<input type="HIDDEN" name="username" value=<%=rs.getString(1)%>>
+		 	<input type="HIDDEN" name="bookid" value=<%=rs.getString(2)%>>
+		 	<td><input type="SUBMIT" name="SUBMIT" value="Delete"></td>
+		 	</form>
+		 	<%
+		 	out.println("</tr>");
+    }
+	%>
+	
+	<%
+
+	ps.close();
+	Conn.close(); 
+	}
+catch(Exception ex){
+    out.println(ex);	
+}
+	}
+else
+{
+out.println("Please Login");
+}
+%>

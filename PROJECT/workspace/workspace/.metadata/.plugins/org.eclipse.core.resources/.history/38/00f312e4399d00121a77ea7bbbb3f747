@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>Pay through PayPal: www.TestAccount.com</title>
+</head>
+<body onload="document.forms['paypalForm'].submit();">
+<form name="paypalForm" action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+ <input type="hidden" name="cmd" value="A..IdS98HQ0LsjbnaR3.2gU3Zb3sAxKZbdoq0WIm3YROL3VaimIm-50m" />
+ <input type="hidden" name="business" value="chilukarakesh123@gmail.com" />
+ <input type="hidden" name="password" value="1365083041" />
+ <input type="hidden" name="custom" value="1123" />
+ <input type="hidden" name="item_name" value="Computer-Laptop" />
+ <input type="hidden" name="amount" value="30"/>
+ <input type="hidden" name="rm" value="1" />
+ <input type="hidden" name="return" value="paypalResponse.jsp" />
+ <input type="hidden" name="cancel_return" value="paypalResponseCancel.jsp" />
+ <input type="hidden" name="cert_id" value="API Singature" />
+</form>
+</body>
+</html>

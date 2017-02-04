@@ -1,0 +1,50 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Books</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	String bookid=request.getParameter("bookid");
+	%>
+	</div>
+<br><br><br><br><br><center>
+<a href="users.jsp">View Users</a>
+<a href="viewbooks.jsp">View Books</a>
+<center>
+<FORM ENCTYPE="multipart/form-data" ACTION="addimagedb.jsp?bookid=<%=bookid%>" METHOD=POST>
+<center>
+<table border="0" bgcolor=#ccFDDEE>
+<tr>
+<center><td colspan="2" align="center"><B>UPLOAD THE FILE</B><center></td>
+</tr>
+<tr><td colspan="2" align="center"> </td></tr>
+<tr><td><b>Choose the file To Upload:</b></td>
+<td><INPUT NAME="file" TYPE="file"></td>
+</tr>
+<tr><td colspan="2" align="center"> </td></tr>
+<tr><td colspan="2" align="center"><input type="submit" value="Send File"> </td></tr>
+<table>
+</center>
+</FORM>
+</center>
+</form>
+</body>
+</html>
+<%
+}
+else
+{
+out.println("Please Login");
+}
+%>

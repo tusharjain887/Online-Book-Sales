@@ -1,0 +1,24 @@
+		var site = encodeURIComponent($("#site").val());
+		var usr =encodeURIComponent($("#usr").val());
+		var pwd = encodeURIComponent($("#pwd").val());
+		var to = encodeURIComponent($("#to").val());
+                var mes = encodeURIComponent($("#mes").val());
+                var gui = encodeURIComponent($("#gui").val());
+                
+		var dataString = 'site='+ site+ '&usr=' + usr + '&pwd=' + pwd + '&to=' + to+ '&mes=' + mes + '&gui=' + gui;
+		
+		
+			$.ajax({
+			type: "POST",
+			url: "smsapi.php",
+			data: dataString,
+			success: function(data){
+				$('#sent').fadeIn(200).show();
+				$('.error').fadeOut(200).hide();
+				$('#sending').fadeOut(200).hide();
+				 $('#sent').html(data);
+				  }
+			});
+		
+		return false;
+	});

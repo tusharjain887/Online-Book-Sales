@@ -1,0 +1,144 @@
+int totalitems=0;
+      int totalcost=0;
+      String usertype=null;
+    <div class="center_content">
+
+<div class="center_title_bar"></div>
+<div style="font-size:16px;color:#B13052;"><center>
+<%
+int order_id=0;
+boolean done=false;
+try{
+	Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	
+	Connection Conn1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps1=Conn1.prepareStatement("INSERT INTO ORDERS (USERNAME,EMAIL,ADDRESS,DATE,TOTALITEMS,TOTALCOST) VALUES (?,?,?,?,?,?)");
+    ps1.setString(1,session.getAttribute("username").toString());
+	ps1.setString(2,email);
+	ps1.setString(3,address);
+	ps1.setString(4,address);
+	ps1.setInt(5,totalitems);
+	ps1.setInt(6,totalcost);
+    int n=ps1.executeUpdate();
+	if(n>0)
+	{
+		Connection Conn=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+		Connection Conn2=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+		Connection Conn3=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+		 Connection con6=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+		PreparedStatement ps3=null;
+		PreparedStatement ps6=null;
+		PreparedStatement ps=Conn.prepareStatement("SELECT MAX(ORDER_ID) FROM ORDERS");
+		PreparedStatement ps2=Conn2.prepareStatement("SELECT * FROM TEMP");
+		ResultSet rs=ps.executeQuery();
+		if(rs.next()) 
+	    {
+			order_id=rs.getInt(1);
+	    }
+		ResultSet rs2=ps2.executeQuery();
+		
+		while(rs2.next()) 
+	    {
+			 
+			ps3=Conn3.prepareStatement("INSERT INTO BOOKORDER VALUES (?,?,?,?)");
+			ps3.setInt(1,order_id);
+			ps3.setString(2,rs2.getString(1));
+			ps3.setInt(3,rs2.getInt(2));
+			ps3.setInt(4,rs2.getInt(3));
+		    int n1=ps3.executeUpdate();
+			if(n1>0)
+			{
+				done=true;
+					ps6=con6.prepareStatement("UPDATE BOOKS SET QUANTITY=QUANTITY-'"+rs2.getInt(3)+"' WHERE BOOK_ID='"+rs2.getString(1)+"'");
+					
+            	   int n6=ps6.executeUpdate();
+        			if(n6>0)
+        				{
+        			//response.sendRedirect("index.jsp");
+        				}
+        			else
+        				{
+        				response.sendRedirect("Error.jsp");
+        				}
+			}			
+			else
+			{
+				response.sendRedirect("Error.jsp");
+			}
+			ps3.close();
+			 
+	    }
+
+		if(done)
+		{
+			%>
+			<br>The order has been successfully processed.
+			<br> All the details has been mailed to you.
+			<br> Your books would be available to you in 2-3 business days. 
+			<br> Pay the specified total cost in cash on delivery.
+			<br> Note down the order id of your transaction.
+			
+			<%
+		}			
+ps2.close();
+Conn3.close();
+ps6.close();
+con6.close();
+		Conn2.close(); 
+		ps.close();
+		Conn.close(); 
+	}
+	else
+	{
+		response.sendRedirect("Error.jsp");
+	}
+
+	ps1.close();
+	Conn1.close(); 
+	}
+	catch(Exception ex){
+	    out.println(ex);
+	}
+    
+    %>
+    </center></div>
+    </div>
+    <!-- end of center content -->
+      </div>
+  <!-- end of main content -->
+  <div class="footer">
+    <br><br>
+    <center> All Rights Reserved 2008</center>
+      </div>
+
+<!-- end of main_container -->
+
+    <%
+        	            	    
+        	try{
+        	    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance();
+        	    Connection con1=null;
+        	   
+        	    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");	
+        	    PreparedStatement ps=con1.prepareStatement("delete from TEMP");
+            	    int n=ps.executeUpdate();
+        			if(n>0)
+        				{
+        				//response.sendRedirect("index.jsp");
+        				}
+        			else
+        				{
+        				//response.sendRedirect("Error.jsp");
+        				}
+        				
+        	    ps.close();
+        	    con1.close();
+        	    }
+
+        	catch(Exception ex){
+        	    out.println(ex);
+        	}
+    %>
+       
+</body>
+</html>

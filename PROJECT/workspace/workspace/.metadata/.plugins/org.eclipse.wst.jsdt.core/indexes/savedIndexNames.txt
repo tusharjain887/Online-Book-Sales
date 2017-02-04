@@ -1,0 +1,9 @@
+INDEX VERSION 1.122+D:\Studies\sem 6\TGMC\workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+2939363135.index
+305446040.index
+1718140346.index
+3447842025.index
+2350637254.index
+3765833052.index
+1823234688.index
+1390805458.index

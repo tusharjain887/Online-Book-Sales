@@ -1,0 +1,38 @@
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="java.io.FileOutputStream"%>
+<%@ page import="java.io.FileOutputStream"%>
+<%@ page import="java.io.OutputStream"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.itextpdf.text.Document"%>
+<%@ page import="com.itextpdf.text.Paragraph"%>
+<%@ page import="com.itextpdf.text.pdf.PdfWriter"%>
+<%@ page import="com.itextpdf.*"%>
+<%
+
+response.setContentType("application/pdf");
+Document document = new Document();
+try{
+ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+PdfWriter.getInstance(document, buffer); 
+document.open();
+document.add(new Paragraph("Hello World, iText"));
+document.add(new Paragraph(new Date().toString()));
+document.close(); 
+
+DataOutput dataOutput = new DataOutputStream(response.getOutputStream());
+byte[] bytes = buffer.toByteArray();
+response.setContentLength(bytes.length);
+for(int i = 0; i < bytes.length; i++)
+{
+dataOutput.writeByte(bytes[i]);
+}
+
+}catch(Exception e){
+e.printStackTrace();
+}
+
+%>
+
+		

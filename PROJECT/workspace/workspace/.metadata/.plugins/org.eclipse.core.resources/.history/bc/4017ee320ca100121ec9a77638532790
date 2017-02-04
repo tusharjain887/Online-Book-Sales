@@ -1,0 +1,279 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="javax.mail.*" %>
+<%@ page import="javax.mail.internet.*" %>
+<%@ page import="javax.activation.*,javax.mail.internet.MimeMessage.RecipientType" %>
+<%
+String username = request.getParameter("username");
+String name = request.getParameter("name");
+String gender = request.getParameter("gender");
+String pro = request.getParameter("pro");
+int age = Integer.parseInt(request.getParameter("age"));
+String mobile = request.getParameter("phone1");
+String email = request.getParameter("email");
+String address = request.getParameter("address");
+String password = request.getParameter("pwd");
+int count=0;
+int check=0;
+int checksms=0;
+int code=0;
+int usercount=0;
+int mobemcount=0;
+String mob="0"+mobile;
+try{
+    Connection con1=null;
+    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 
+    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+    PreparedStatement ps12=con1.prepareStatement("SELECT USERNAME FROM USERS WHERE USERNAME='"+username+"'");
+    PreparedStatement ps13=con1.prepareStatement("SELECT CONTACT_NO FROM USERS WHERE CONTACT_NO='"+mobile+"'");
+    PreparedStatement ps14=con1.prepareStatement("SELECT EMAIL_ID FROM USERS WHERE EMAIL_ID='"+email+"'");
+	ResultSet rs12=ps12.executeQuery();
+	ResultSet rs13=ps13.executeQuery();
+	ResultSet rs14=ps14.executeQuery();
+	if(rs12.next())
+	{
+		if(rs12.getString(1)!=null)
+			{
+			usercount=1;
+			}
+	}
+	if(rs13.next())
+	{
+		if(rs13.getString(1)!=null)
+		{
+			mobemcount=1;
+		}	
+	}
+	if(rs14.next())
+	{
+		if(rs14.getString(1)!=null)
+		{
+			mobemcount=1;
+		}	
+	}
+	out.println(usercount);
+	out.println(mobemcount);
+	if(usercount==0 && mobemcount==0)
+	{
+    PreparedStatement ps=con1.prepareStatement("insert into TEMPUSER (USERNAME,PASSWORD,AGE,GENDER,CONTACT_NO,EMAIL_ID,ADDRESS,CURRENT_STATUS,NAME) values(?,?,?,?,?,?,?,?,?)");
+		ps.setString(1,username);
+		ps.setString(2,password);
+		ps.setString(8,pro);
+		ps.setInt(3,age);
+		ps.setString(4,gender);
+		ps.setString(5,mobile);
+		ps.setString(6,email);
+		ps.setString(7,address);
+		ps.setString(9,name);	
+    int n=ps.executeUpdate();
+		if(n>0)
+		  {
+			check=1;
+			PreparedStatement ps4=con1.prepareStatement("SELECT MAX(CODE) FROM TEMPUSER");
+			ResultSet rs4=ps4.executeQuery();
+			if(rs4.next()) 
+		    {
+				code=rs4.getInt(1);
+		    }
+			String HOST = "smtp.gmail.com";
+
+			String USER = "idealbooksales";
+
+		      String PASSWORD = "ideal123456";
+
+		      String PORT = "465";
+
+		      String FROM = "idealbooksales@gmail.com";
+
+		      String TO = email;
+
+		 
+
+		      String STARTTLS = "true";
+
+		      String AUTH = "true";
+
+		      String DEBUG = "true";
+
+		      String SOCKET_FACTORY = "javax.net.ssl.SSLSocketFactory";
+
+		      String SUBJECT = "Activation Code for Ideal Book Sales";
+
+		      String TEXT ="Your activation code is "+code;
+		      
+		      Properties props = new Properties();
+			props.put("mail.smtp.host", HOST);
+
+		        props.put("mail.smtp.port", PORT);
+
+		        props.put("mail.smtp.user", USER);
+
+		 
+
+		        props.put("mail.smtp.auth", AUTH);
+
+		        props.put("mail.smtp.starttls.enable", STARTTLS);
+
+		        props.put("mail.smtp.debug", DEBUG);
+		     
+		 
+
+		        props.put("mail.smtp.socketFactory.port", PORT);
+
+		        props.put("mail.smtp.socketFactory.class", SOCKET_FACTORY);
+
+		        props.put("mail.smtp.socketFactory.fallback", "false");
+
+		 
+
+		       
+		 
+
+		            //Obtain the default mail session
+
+		            Session sessio = Session.getDefaultInstance(props, null);
+
+		            sessio.setDebug(true);
+
+		 System.out.println("Success");
+
+		            //Construct the mail message
+
+		            MimeMessage message = new MimeMessage(sessio);
+
+		            message.setText(TEXT);
+
+		            message.setSubject(SUBJECT);
+
+		            message.setFrom(new InternetAddress(FROM));
+
+		            message.addRecipient(RecipientType.TO, new InternetAddress(TO));
+
+		            message.saveChanges();
+
+		 
+					System.out.println("Success");
+		            //Use Transport to deliver the message
+
+		            Transport transport = sessio.getTransport("smtp");
+
+		            transport.connect(HOST, USER, PASSWORD);
+			System.out.println("Success");
+		            transport.sendMessage(message, message.getAllRecipients());
+
+		            transport.close();
+
+		 System.out.println("Success");
+		 out.println(" Email Has Been Sent To You");
+		 check++;
+		 %>
+		 <a href="http://api.mVaayoo.com/mvaayooapi/MessageCompose?user=singh.maharshi@gmail.com:system&senderID=TEST SMS&receipientno=<%=mob %>&dcs=0&msgtxt=<%=TEXT %>&state=0" target="_blank">Click To Receive SMS</a>
+		 <%
+		
+		  }
+		else
+			out.println("Not Successful"); 
+    ps.close();
+	}
+    ps12.close();
+    ps13.close();
+    con1.close();
+    }
+
+catch(Exception ex){
+    out.println(ex);
+}
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Activation Code</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="iecss.css" />
+<![endif]-->
+<script type="text/javascript" src="js/boxOver.js"></script>
+</head>
+<body>
+<div id="main_container">
+  
+  <div id="header">
+	
+  </div>
+  
+  <div id="main_content">
+    <div id="menu_tab">
+      <div class="left_menu_corner"></div>
+      <ul class="menu">
+        <li><a href="index.jsp" class="nav1"> Home</a></li>
+        <li class="divider"></li>
+        <li><a href="categories.jsp" class="nav2">Categories</a></li>
+        <li class="divider"></li>
+        <li><a href="registration.html" class="nav4">Sign Up</a></li>
+        <li class="divider"></li>
+        <li><a href="news.jsp" class="nav3">Offers</a></li>
+        <li class="divider"></li>
+        <li><a href="contact.jsp" class="nav6">Contact Us</a></li>
+        <li class="divider"></li>
+        <li><a href="forum.jsp" class="nav6">Forum</a></li>
+        <li class="divider"></li>
+        <li><a href="aboutus.jsp" class="nav3">About Us</a></li>
+        <li class="divider"></li>
+        
+      </ul>
+      <div class="right_menu_corner"></div>
+    </div>
+    <!-- end of menu tab -->
+    <div class="left_content">
+     <br><br><br>
+      
+      </div>
+      
+      
+    <!-- end of left content -->
+ 
+    <div class="center_content">
+      <div class="center_title_bar">Registration</div>
+      <div style="font-size:16px;color:#B13052;"><center>
+      <br><br><br><br><center>
+      <%
+if(check==2)
+{
+	//out.println(interests.length);
+	//out.println(interests[0]);
+	//out.println(interests[1]);
+	%>
+		   The activation code has been mailed and messaged to you .<br><br>Please enter here to activate your account.
+		   <form name="myForm" action="regconfirm.jsp" method="post">
+		   Enter the code : <input type=text name="code" size=15>
+		   <input type=submit value="submit">
+		   </form>
+<%		   
+}
+else
+{
+ out.println("Registration not completed");
+ out.println("<a href='registration.jsp'>Back to Sign Up</a>");
+}
+%>  
+</center></div>
+    </div>
+    <!-- end of center content -->
+    <div class="right_content">
+     <br><br><br>
+    </div>
+    <!-- end of right content -->
+  </div>
+  <!-- end of main content -->
+  <div class="footer">
+    <br><br>
+    <center> All Rights Reserved 2008</center>
+      </div>
+
+<!-- end of main_container -->
+</body>
+</html>

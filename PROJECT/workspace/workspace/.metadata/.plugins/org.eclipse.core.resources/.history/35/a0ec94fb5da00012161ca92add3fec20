@@ -1,0 +1,428 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="java.io.FileOutputStream"%>
+<%@ page import="java.io.FileOutputStream"%>
+<%@ page import="java.io.OutputStream"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.itextpdf.text.Anchor"%>
+<%@ page import="com.itextpdf.text.Element"%>
+<%@ page import="com.itextpdf.text.BadElementException"%>
+<%@ page import="com.itextpdf.text.BaseColor"%>
+<%@ page import="com.itextpdf.text.Chapter"%>
+<%@ page import="com.itextpdf.text.Document"%>
+<%@ page import="com.itextpdf.text.Paragraph"%>
+<%@ page import="com.itextpdf.text.DocumentException"%>
+<%@ page import="com.itextpdf.text.Font"%>
+<%@ page import="com.itextpdf.text.List"%>
+<%@ page import="com.itextpdf.text.ListItem"%>
+<%@ page import="com.itextpdf.text.Phrase"%>
+<%@ page import="com.itextpdf.text.Section"%>
+<%@ page import="com.itextpdf.text.pdf.PdfPTable"%>
+<%@ page import="com.itextpdf.text.pdf.PdfPCell"%>
+<%@ page import="com.itextpdf.text.pdf.PdfWriter"%>
+<%@ page import="com.itextpdf.text.Chunk"%>
+<%@ page import="com.itextpdf.text.Image"%>
+<%@ page import="com.itextpdf.*"%>
+<%@ page import="java.util.Date, java.text.SimpleDateFormat" %>
+<% java.util.Locale locale = request.getLocale(); %>    
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Categories</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="iecss.css" />
+<![endif]-->
+<script type="text/javascript" src="js/boxOver.js"></script>
+</head>
+<body>
+<div id="main_container">
+ <%
+String email = request.getParameter("email").toString();
+String address = request.getParameter("address").toString();
+int totalitems = Integer.parseInt(request.getParameter("items"));
+int totalcost = Integer.parseInt(request.getParameter("tcost"));
+java.sql.Date sqlDate=null;
+String bookname[];
+bookname=new String[100];
+int cost[],quantity[];
+cost=new int[100];
+quantity=new int[100];
+%> 
+  <div id="header">
+  <div class="logout">
+ <%  Object c=session.getAttribute("username");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("username").toString());
+	%>
+	&nbsp<a href='myprofile.jsp'>Profile</a>
+	&nbsp<a href='logout.jsp'>Logout</a>
+	<%
+	}
+	%>
+	</div>
+	<div class="leftcontent"><h1>&nbsp<u>IDEAL BOOK STORE</u></h1></div>
+    <div class="leftdowncontent"><h3>&nbsp&nbsp&nbspEnjoy shopping at discounted rates</h3></div>
+    
+  </div>
+  
+  <div id="main_content">
+    <div id="menu_tab">
+      <div class="left_menu_corner"></div>
+      <ul class="menu">
+        <li><a href="index.jsp" class="nav1"> Home</a></li>
+        <li class="divider"></li>
+        <li><a href="categories.jsp" class="nav2">Categories</a></li>
+        <li class="divider"></li>
+        <%
+        if(c==null)
+        {
+        %><li><a href="registration.html" class="nav4">Sign Up</a></li>
+        <li class="divider"></li>
+        <%
+        }
+        %>
+        <li><a href="news.jsp" class="nav3">Offers</a></li>
+        <li class="divider"></li>
+        <li><a href="contact.jsp" class="nav6">Contact Us</a></li>
+        <li class="divider"></li>
+        <li><a href="forum.jsp" class="nav6">Forum</a></li>
+        <li class="divider"></li>
+        <li><a href="aboutus.jsp" class="nav3">About Us</a></li>
+        <li class="divider"></li>
+        
+      </ul>
+      <div class="right_menu_corner"></div>
+    </div>
+    <!-- end of menu tab -->
+    <div class="left_content">
+     <br><br><br>
+      <div class="title_box">Categories</div>
+      <ul class="left_menu">
+      <%
+      try{
+    	  Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	Connection Conn8=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps8=Conn8.prepareStatement("SELECT CAT_ID,CAT_NAME FROM CATEGORY"); 
+	ResultSet rs8=ps8.executeQuery();
+	while(rs8.next()) 
+    {
+		String name=rs8.getString(2);
+ 	%> 
+        <li class="even"><%out.println("<a href='viewcategory.jsp?cat_id="+rs8.getString(1)+"'>"+name+"</a>");%></li>  
+        <%
+        } 
+        %>  
+      </ul>
+      <%
+      PreparedStatement ps9=Conn8.prepareStatement("SELECT IMAGEURL FROM ADVERTISEMENT ORDER BY AD_ID DESC LIMIT 0,3"); 
+	ResultSet rs9=ps9.executeQuery();
+	while(rs9.next()) 
+    {
+		%>
+      <div class="banner_adds"><br><br><br> <%out.println("<img src='C:/Uploaded Images/"+rs9.getString(1)+"'></img>");%> </div>
+      <%
+      }
+	ps8.close();
+	ps9.close();
+	Conn8.close();
+      }
+      catch(Exception ex){
+  	    out.println(ex);
+  	}
+      %>
+    </div>
+      </div>
+      
+      
+    <!-- end of left content -->
+    <div class="center_content">
+
+<div class="center_title_bar"></div>
+<div style="font-size:16px;color:#B13052;"><center>
+<%
+int order_id=0;
+boolean done=false;
+try{
+	Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	
+	Connection Conn1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps1=Conn1.prepareStatement("INSERT INTO ORDERS (USERNAME,EMAIL,ADDRESS,DATE,TOTALITEMS,TOTALCOST) VALUES (?,?,?,?,?,?)");
+    ps1.setString(1,session.getAttribute("username").toString());
+	ps1.setString(2,email);
+	ps1.setString(3,address);
+	
+	 SimpleDateFormat reFormat = new SimpleDateFormat("yyyy-MM-dd");
+	 Date activityDate = new Date();
+     sqlDate = new java.sql.Date(activityDate.getTime());
+  	 ps1.setDate(4,sqlDate);
+
+//	ps1.setString(4,address);
+	ps1.setInt(5,totalitems);
+	ps1.setInt(6,totalcost);
+    int n=ps1.executeUpdate();
+	if(n>0)
+	{
+		Connection Conn=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+		Connection Conn2=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+		Connection Conn3=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+		 Connection con6=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+		PreparedStatement ps3=null;
+		PreparedStatement ps6=null;
+		PreparedStatement ps=Conn.prepareStatement("SELECT MAX(ORDER_ID) FROM ORDERS");
+		PreparedStatement ps2=Conn2.prepareStatement("SELECT * FROM TEMP");
+		ResultSet rs=ps.executeQuery();
+		if(rs.next()) 
+	    {
+			order_id=rs.getInt(1);
+	    }
+		ResultSet rs2=ps2.executeQuery();
+		int i=0;
+		while(rs2.next()) 
+	    {
+			 
+			ps3=Conn3.prepareStatement("INSERT INTO BOOKORDER VALUES (?,?,?,?,?)");
+			ps3.setInt(1,order_id);
+			ps3.setString(2,rs2.getString(1));
+			ps3.setInt(3,rs2.getInt(2));
+			cost[i]=rs2.getInt(2);
+			ps3.setInt(4,rs2.getInt(3));
+			quantity[i]=rs2.getInt(3);
+			ps3.setString(5,rs2.getString(4));
+			bookname[i]=rs2.getString(4);
+			i++;
+		    int n1=ps3.executeUpdate();
+			if(n1>0)
+			{
+				done=true;
+					ps6=con6.prepareStatement("UPDATE BOOKS SET QUANTITY=QUANTITY-'"+rs2.getInt(3)+"' WHERE BOOK_ID='"+rs2.getString(1)+"'");
+					
+            	   int n6=ps6.executeUpdate();
+        			if(n6>0)
+        				{
+        			//response.sendRedirect("index.jsp");
+        				}
+        			else
+        				{
+        				response.sendRedirect("Error.jsp");
+        				}
+			}			
+			else
+			{
+				response.sendRedirect("Error.jsp");
+			}
+			ps3.close();
+			 
+	    }
+
+		if(done)
+		{
+			%>
+			<br><br>The order has been successfully processed.
+			<br><br> All the details has been mailed to you.
+			<br><br> Your books would be available to you in 2-3 business days. 
+			<br><br> Pay the specified total cost in cash on delivery.
+			<br><br> Note down the order id of your transaction.
+			
+			<%
+		}			
+ps2.close();
+Conn3.close();
+ps6.close();
+con6.close();
+		Conn2.close(); 
+		ps.close();
+		Conn.close(); 
+	}
+	else
+	{
+		response.sendRedirect("Error.jsp");
+	}
+
+	ps1.close();
+	Conn1.close(); 
+	}
+	catch(Exception ex){
+	    out.println(ex);
+	}
+    
+    %>
+    </center></div>
+    </div>
+    <!-- end of center content -->
+      </div>
+  <!-- end of main content -->
+  <div class="footer">
+    <br><br>
+    <center> All Rights Reserved 2008</center>
+      </div>
+
+<!-- end of main_container -->
+
+    <%
+        	            	    
+        	try{
+        	    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance();
+        	    Connection con1=null;
+        	   
+        	    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");	
+        	    PreparedStatement ps=con1.prepareStatement("delete from TEMP");
+            	    int n=ps.executeUpdate();
+        			if(n>0)
+        				{
+        				//response.sendRedirect("index.jsp");
+        				}
+        			else
+        				{
+        				//response.sendRedirect("Error.jsp");
+        				}
+        				
+        	    ps.close();
+        	    con1.close();
+        	    }
+
+        	catch(Exception ex){
+        	    out.println(ex);
+        	}
+    %>
+       
+       <%
+
+try {
+	Font catFont = new Font(Font.FontFamily.TIMES_ROMAN, 18,Font.BOLD);
+	Font catFont1 = new Font(Font.FontFamily.TIMES_ROMAN, 15,Font.UNDERLINE);
+	Font smallBold = new Font(Font.FontFamily.TIMES_ROMAN, 12,Font.BOLD);
+
+	OutputStream file = new FileOutputStream(new File("D:\\Invoice.pdf"));
+	
+	Document document = new Document();
+	PdfWriter.getInstance(document, file);
+
+	document.open();
+	
+    	document.addTitle("Ideal Books Store Invoice");
+	    document.addSubject("Invoice");
+	    document.addKeywords("Total, Quantity, Cost");
+	    document.addAuthor("Ideal Books Store");
+	    document.addCreator("Admin");
+	    
+	    Paragraph preface = new Paragraph();
+	    
+		  preface.add(new Paragraph(" "));
+	    
+		      preface = new Paragraph("IDEAL BOOKS STORE",catFont);
+		      preface.setAlignment(Element.ALIGN_CENTER);
+		      
+		      preface.add(new Paragraph(" "));
+			  preface.add(new Paragraph(" "));
+		      document.add(preface);
+
+		      preface = new Paragraph("Invoice",catFont1);
+		      preface.setAlignment(Element.ALIGN_CENTER);
+		      
+		      preface.add(new Paragraph(" "));
+		      document.add(preface);
+		      
+		      preface= new Paragraph("Report generated on: " + new Date(), smallBold);
+		      preface.setAlignment(Element.ALIGN_RIGHT);
+		      
+		      preface.add(new Paragraph(" "));
+		      
+		      document.add(preface);
+		      
+		      preface = new Paragraph("Order Id   : "+order_id);
+		      preface.setAlignment(Element.ALIGN_LEFT);
+		      preface.setIndentationLeft(50);
+		      document.add(preface);
+
+		      preface = new Paragraph("Username   :" +session.getAttribute("username").toString());
+		      preface.setAlignment(Element.ALIGN_LEFT);
+		      preface.setIndentationLeft(50);
+		      document.add(preface);
+
+		      preface = new Paragraph("Email Id   :"+email);
+		      preface.setAlignment(Element.ALIGN_LEFT);
+		      preface.setIndentationLeft(50);
+		      document.add(preface);
+
+		      preface = new Paragraph("Ordered on :"+sqlDate);
+		      preface.setAlignment(Element.ALIGN_LEFT);
+		      preface.setIndentationLeft(50);
+		      document.add(preface);
+
+		      preface = new Paragraph(" ");
+		      preface.setAlignment(Element.ALIGN_LEFT);
+		      preface.setIndentationLeft(50);
+			  
+		      PdfPTable table = new PdfPTable(4);
+		      PdfPCell c1 = new PdfPCell(new Phrase("Book Name"));
+		      c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		      table.addCell(c1);
+
+		      c1 = new PdfPCell(new Phrase("Quantity"));
+		      c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		      table.addCell(c1);
+
+		      c1 = new PdfPCell(new Phrase("Cost"));
+		      c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		      table.addCell(c1);
+
+		      c1 = new PdfPCell(new Phrase("Total"));
+		      c1.setHorizontalAlignment(Element.ALIGN_CENTER);
+		      table.addCell(c1);
+
+		      table.setHeaderRows(1);
+
+		      for(int i=0;i<cost.length;i++)
+		      {
+				    table.addCell("2.0");
+				    table.addCell("2.1");
+				    table.addCell("2.2");
+				    table.addCell("2.3");
+			 }
+		      
+			    table.addCell("Total");
+			    table.addCell("");
+			    table.addCell("");
+			    table.addCell("");
+
+			    table.addCell("Discounted Total");
+			    table.addCell("");
+			    table.addCell("");
+			    table.addCell("");
+
+			    preface.add(table);
+			    
+			      preface.add(new Paragraph(" "));
+			      preface.add(new Paragraph(" "));
+			      
+			      preface.add(new Paragraph(" Your products will be delivered in 3-7 bussiness days.",smallBold));
+			      preface.add(new Paragraph(" For any enqiry, visit our website.",smallBold));
+
+			      preface.add(new Paragraph(" "));
+			      preface.add(new Paragraph(" "));
+
+			      preface.add(new Paragraph("Thank You.",smallBold));
+			      preface.setAlignment(Element.ALIGN_CENTER);
+			      document.add(preface);
+		      
+		      document.close();
+		  	  file.close();
+	
+			      
+} catch (Exception e) {
+
+	e.printStackTrace();
+}
+
+%>
+
+       
+       
+</body>
+</html>

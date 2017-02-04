@@ -1,0 +1,191 @@
+<%@page contentType="text/html" pageEncoding="UTF-8" errorPage="Error.jsp"%>
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%
+int code = Integer.parseInt(request.getParameter("code"));
+String interests[]=new String[10];
+String username = null;
+String name = null;
+String gender = null;
+String pro = null;
+int age = 0;
+String mobile = null;
+String email = null;
+String address = null;
+String password = null;
+int count=0;
+int i=0;
+int check=0;
+try{
+    Connection con1=null;
+    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 
+    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","VINIT","vinit");
+    PreparedStatement ps=con1.prepareStatement("SELECT * FROM TEMPUSER WHERE CODE='"+code+"'");
+    ResultSet rs1=ps.executeQuery();
+	while(rs1.next()) 
+    {
+		username = rs1.getString(2);
+		name = rs1.getString(10);
+	    gender = rs1.getString(5);
+		pro = rs1.getString(9);
+		age = rs1.getInt(4);
+		mobile = rs1.getString(6);
+		email = rs1.getString(7);
+		address = rs1.getString(8);
+		password = rs1.getString(3);
+		out.println(username);
+    }	
+	//PreparedStatement ps1=con1.prepareStatement("SELECT INTERESTS FROM TEMPINTERESTS WHERE USERNAME='"+username+"'");
+	//ResultSet rs2=ps1.executeQuery();
+    //while(rs2.next()) 
+	//{
+    	//interests[i]=rs2.getString(1);
+    	//out.println(interests[i]);
+    	//i++;
+	//} 
+	if(i==0)
+	{
+		PreparedStatement ps2=con1.prepareStatement("insert into USERS values(?,?,?,?,?,?,?,?,?,?)");
+		ps2.setString(1,username);
+		ps2.setString(2,password);
+		ps2.setString(3,"Regular");
+		ps2.setString(9,pro);
+		ps2.setInt(4,age);
+		ps2.setString(5,gender);
+		ps2.setString(6,mobile);
+		ps2.setString(7,email);
+		ps2.setString(8,address);
+		ps2.setString(10,name);	
+    int n2=ps2.executeUpdate();
+		if(n2>0)
+		   {
+			check++;
+			Connection Conn5=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","VINIT","vinit"); 
+			PreparedStatement ps5=Conn5.prepareStatement("DELETE FROM TEMPUSER WHERE USERNAME='"+username+"'"); 
+			int n5=ps5.executeUpdate();
+			if(n5>0)
+				{
+				//response.sendRedirect("view_cart.jsp");
+				}
+			else
+				{
+				out.println("Sorry an error has occured");
+				}
+			ps5.close();
+			Conn5.close(); 
+		   }
+		else
+			out.println("1Not Successful"); 
+		//PreparedStatement ps3=null;
+		//for(int j=0; j<interests.length; j++)
+		//{
+		//ps3 = con1.prepareStatement("insert into USERINTERESTS values(?,?)");
+		//ps3.setString(1,username);
+		//ps3.setString(2,interests[j]);
+		//}
+		//int n3=ps3.executeUpdate();
+		//if(n3>0)
+		//   check++;
+		//else
+			//out.println("2Not Successful");
+		 ps2.close();
+		   // ps3.close();
+	}
+	else
+		out.println("3Not Successful"); 	
+	
+    ps.close();
+    //ps1.close();
+   
+    con1.close();
+    }
+
+catch(Exception ex){
+    out.println(ex);
+}
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Ideal Book Store</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="iecss.css" />
+<![endif]-->
+<script type="text/javascript" src="js/boxOver.js"></script>
+</head>
+<body>
+<div id="main_container">
+  <div class="top_bar">
+  <div id="header">
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("username");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("username").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	}
+	%>
+	</div>
+   <div  style="padding:10px;font-size:25px;color: #FFF;"><h1>IDEAL BOOK STORE</h1></div>
+  </div>
+  <div id="main_content">
+    <div id="menu_tab">
+      <div class="left_menu_corner"></div>
+      <ul class="menu">
+        <li><a href="index.jsp" class="nav1"> Home</a></li>
+        <li class="divider"></li>
+        <li><a href="categories.jsp" class="nav2">Categories</a></li>
+        <li class="divider"></li>
+        <%
+        if(c==null)
+        {
+        %><li><a href="registration.html" class="nav4">Sign Up</a></li>
+        <li class="divider"></li>
+        <%
+        }%>
+        <li><a href="contact.jsp" class="nav5">Contact Us</a></li>
+        <li class="divider"></li>
+      </ul>
+      <div class="right_menu_corner"></div>
+    </div>
+    <!-- end of menu tab -->
+    <div class="left_content">
+     <br><br><br>
+    </div>
+    <!-- end of left content -->
+    <div class="center_content">
+      <div class="center_title_bar">Contact Us</div>
+      <br><br><br><br><center>
+  <%
+if(check==1)
+{
+		   out.println("You have successfully registered your account");
+		   out.println("<a href='index.jsp'>Login</a>");
+}
+else
+{
+ out.println("Registration not completed");
+ out.println("<a href='registration.html'>Back to Sign Up</a>");
+}
+%>      
+</center>
+    </div>
+    <!-- end of center content -->
+    <div class="right_content">
+     <br><br><br>
+    </div>
+    <!-- end of right content -->
+  </div>
+  <!-- end of main content -->
+  <div class="footer">
+    <br><br>
+    <center> All Rights Reserved 2008</center>
+      </div>
+
+<!-- end of main_container -->
+</body>
+</html>

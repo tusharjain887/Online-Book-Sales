@@ -1,0 +1,171 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<%@ page import="javax.mail.*" %>
+<%@ page import="javax.mail.internet.*" %>
+<%@ page import="javax.activation.*,javax.mail.internet.MimeMessage.RecipientType" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Add Corporate User</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	%>
+	</div>
+<br><br><br><br><br>
+<%
+String username = request.getParameter("username");
+String name = request.getParameter("name");
+String lname = request.getParameter("lname");
+String gender = request.getParameter("gender");
+String pro = request.getParameter("pro");
+String mobile = request.getParameter("phone1");
+String email = request.getParameter("email");
+String password = request.getParameter("pwd");
+int age = Integer.parseInt(request.getParameter("age"));
+String address = request.getParameter("address");
+name=name+" "+lname;
+int count=0;
+int i=1;
+int check=0;
+try{
+    Connection con1=null;
+    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 
+    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh");
+    PreparedStatement ps=con1.prepareStatement("insert into USERS values(?,?,?,?,?,?,?,?,?,?)");
+		ps.setString(1,username);
+		ps.setString(2,password);
+		ps.setString(3,"Corporate");
+		ps.setInt(4,age);
+		ps.setString(5,gender);
+		ps.setString(6,mobile);
+		ps.setString(7,email);
+		ps.setString(8,address);
+		ps.setString(9,pro);
+		ps.setString(10,name);
+		
+		
+    int n=ps.executeUpdate();
+		if(n>0)
+		   check=1;
+		else
+			out.println("Not Successful"); 
+		
+		if(check==1)
+			{
+			String HOST = "smtp.gmail.com";
+
+			String USER = "idealbooksales";
+
+		      String PASSWORD = "ideal123456";
+
+		      String PORT = "465";
+
+		      String FROM = "idealbooksales@gmail.com";
+
+	      String TO = email;
+
+	 
+
+	      String STARTTLS = "true";
+
+	      String AUTH = "true";
+
+	      String DEBUG = "true";
+
+	      String SOCKET_FACTORY = "javax.net.ssl.SSLSocketFactory";
+
+	      String SUBJECT = "Password for Ideal Book Store";
+
+	      String TEXT ="You have registered with Online Book Sales.Your Account Details are <br><br>Username= "+username+"<br><br>Password= "+password;
+	      
+	      Properties props = new Properties();
+		props.put("mail.smtp.host", HOST);
+
+	        props.put("mail.smtp.port", PORT);
+
+	        props.put("mail.smtp.user", USER);
+
+	 
+
+	        props.put("mail.smtp.auth", AUTH);
+
+	        props.put("mail.smtp.starttls.enable", STARTTLS);
+
+	        props.put("mail.smtp.debug", DEBUG);
+	     
+	 
+
+	        props.put("mail.smtp.socketFactory.port", PORT);
+
+	        props.put("mail.smtp.socketFactory.class", SOCKET_FACTORY);
+
+	        props.put("mail.smtp.socketFactory.fallback", "false");
+
+	 
+
+	       
+	 
+
+	            //Obtain the default mail session
+
+	            Session sessio = Session.getDefaultInstance(props, null);
+
+	            sessio.setDebug(true);
+
+	 System.out.println("Success");
+
+	            //Construct the mail message
+
+	            MimeMessage message = new MimeMessage(sessio);
+
+	            message.setText(TEXT);
+
+	            message.setSubject(SUBJECT);
+
+	            message.setFrom(new InternetAddress(FROM));
+
+	            message.addRecipient(RecipientType.TO, new InternetAddress(TO));
+
+	            message.saveChanges();
+
+	 
+				System.out.println("Success");
+	            //Use Transport to deliver the message
+
+	            Transport transport = sessio.getTransport("smtp");
+
+	            transport.connect(HOST, USER, PASSWORD);
+		System.out.println("Success");
+	            transport.sendMessage(message, message.getAllRecipients());
+
+	            transport.close();
+
+	 System.out.println("Success");
+	 response.sendRedirect("users.jsp");
+}
+    ps.close();
+    con1.close();
+    }
+
+catch(Exception ex){
+    out.println(ex);
+}
+%>
+</body>
+</html>
+<%
+}
+else
+{
+out.println("Please Login");
+}
+%>

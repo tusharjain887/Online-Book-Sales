@@ -1,0 +1,307 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Sign Up</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if IE 6]>
+<link rel="stylesheet" type="text/css" href="iecss.css" />
+<![endif]-->
+<script type="text/javascript" src="js/boxOver.js"></script>
+
+<script type="text/javascript">
+function formValidation()
+{
+var username = document.myForm.username;
+var name = document.myForm.name;
+var gender = document.myForm.gender;
+var pro = document.myForm.pro;
+var age = document.myForm.age;
+var phone1 = document.myForm.phone1;
+var email = document.myForm.email;
+var address = document.myForm.address;
+var pwd = document.myForm.pwd 
+var pwd1 = document.myForm.pwd1;
+
+username_validation(username);
+}
+
+function username_validation(username)
+{
+var uid_len = username.value.length;
+if (uid_len == 0)
+{
+alert("User Id should not be empty");
+username.focus();
+return false;
+}
+return true;
+}
+
+function name_validation(name)
+{ 
+var letters = /^[A-Za-z]+$/;
+if(name.value.match(letters))
+{
+return true;
+}
+else
+{
+alert('Username must have alphabet characters only');
+name.focus();
+return false;
+}
+}
+
+function sex_validation(gender)
+{
+var len = gender.value.length;
+if (len == 0)
+{
+alert("Select gender should not be empty");
+gender.focus();
+return false;
+}
+return true;
+}
+
+function pro_validation(pro)
+{
+if(pro.value == "Default")
+{
+alert('Select your profession from the list');
+pro.focus();
+return false;
+}
+else
+{
+return true;
+}
+}
+
+function age_validation(age)
+{ 
+var numbers = /^[0-9]+$/;
+if(age.value.length<=2 && age.value.match(numbers))
+{
+return true;
+}
+else
+{
+alert('Age must have numeric characters only/max 3 digits');
+age.focus();
+return false;
+}
+}
+
+function phone_validation(phone1)
+{ 
+var numbers = /^[0-9]+$/;
+if(phone1.value.length==10 && phone1.value.match(numbers))
+{
+return true;
+}
+else
+{
+alert('Incorrect phone number./nPhone must be a 10 digits numeric characters only.');
+phone1.focus();
+return false;
+}
+}
+
+function email_validate(email)
+{
+var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+if(email.value.match(mailformat))
+{
+return true;
+}
+else
+{
+alert("You have entered an invalid email address!");
+mail.focus();
+return false;
+}
+}
+
+function password_validation(pwd,pwd1)
+{
+	if(pwd!=pwd1)
+		{
+		alert("Password mismatch");
+		pwd.focus();
+		return false;
+		}
+	
+var pwd_len = pwd.value.length;
+if (pwd_len == 0 || pwd_len > 15 || passid_len < 5)
+{
+alert("Password should not be empty / length be between 5 to 15");
+pwd.focus();
+return false;
+}
+return true;
+}
+</script>
+</head>
+<body>
+<div id="main_container">
+  
+  <div id="header">
+	<div class="leftcontent"><h1><u>IDEAL BOOK STORE</u></h1></div>
+    <div class="leftdowncontent"><h3>&nbsp&nbsp&nbspEnjoy shopping at discounted rates</h3></div>
+    
+  </div>
+  
+  <div id="main_content">
+    <div id="menu_tab">
+      <div class="left_menu_corner"></div>
+      <ul class="menu">
+        <li><a href="index.jsp" class="nav1"> Home</a></li>
+        <li class="divider"></li>
+        <li><a href="categories.jsp" class="nav2">Categories</a></li>
+        <li class="divider"></li>
+        <li><a href="registration.jsp" class="nav4">Sign Up</a></li>
+        <li class="divider"></li>
+        <li><a href="news.jsp" class="nav3">Offers</a></li>
+        <li class="divider"></li>
+        <li><a href="contact.jsp" class="nav6">Contact Us</a></li>
+        <li class="divider"></li>
+        <li><a href="forum.jsp" class="nav6">Forum</a></li>
+        <li class="divider"></li>
+        <li><a href="aboutus.jsp" class="nav3">About Us</a></li>
+        <li class="divider"></li>
+        
+      </ul>
+      <div class="right_menu_corner"></div>
+    </div>
+    <!-- end of menu tab -->
+</br></br></br>
+    <div class="left_content">
+         <div class="title_box">Categories</div>
+      <ul class="left_menu">
+      <%
+      try{
+    	  Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 	
+	Connection Conn8=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","Rakesh","Rakesh"); 
+	PreparedStatement ps8=Conn8.prepareStatement("SELECT CAT_ID,CAT_NAME FROM CATEGORY"); 
+	ResultSet rs8=ps8.executeQuery();
+	while(rs8.next()) 
+    {
+		String name=rs8.getString(2);
+ 	%> 
+        <li class="even"><%out.println("<a href='viewcategory.jsp?cat_id="+rs8.getString(1)+"'>"+name+"</a>");%></li>  
+        <%
+        } 
+        %>  
+      </ul>
+      <%
+      PreparedStatement ps9=Conn8.prepareStatement("SELECT IMAGEURL FROM ADVERTISEMENT ORDER BY AD_ID DESC LIMIT 0,3"); 
+	ResultSet rs9=ps9.executeQuery();
+	while(rs9.next()) 
+    {
+		%>
+      <div class="banner_adds"><br><br><br> <%out.println("<img src='C:/Uploaded Images/"+rs9.getString(1)+"'></img>");%> </div>
+      <%
+      }
+	ps8.close();
+	ps9.close();
+	Conn8.close();
+      }
+      catch(Exception e)
+      {
+    	  
+      }
+      %>
+    </div>
+     
+    <!-- end of left content -->
+     <br>
+    </div>
+    <!-- end of left content -->
+    <div class="center_content">
+      <div class="center_title_bar">User Registration</div>
+      <div style="font-size:16px;color:#B13052;">
+      <form name="myForm" action="registration1.jsp" method="post">
+      <center>
+<table>
+<br><br>
+
+<h3>
+<tr>
+<td style="margin-bottom: 5px;">Username        : </td>
+<td style="margin-bottom: 5px;"><input type=text name="username" size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Name         : </td>
+<td style="margin-bottom: 5px;"><input type=text name="name" size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Gender               :</td>
+<td style="margin-bottom: 5px;"><input type="radio" name="gender" value="male" /><span>Male</span><input type="radio" name="gender" value="female" /><span>Female</span></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Profession        : </td>
+<td style="margin-bottom: 5px;"><select name="pro">
+<option selected="" value="Default">(Please select a Profession)</option>
+<option value=Student>Student</option>
+<option value=Business>Business</option>
+<option value=Govt. Employee>Govt.Employ</option>
+<option value=Pvt.Employee>Pvt.Employ</option>
+</select></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Age               :</td>
+<td style="margin-bottom: 5px;"><input type=text name="age"size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Mobile.No         :</td>
+<td style="margin-bottom: 5px;"><input type=text name="phone1" size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">E-MAIL            :</td>
+<td style="margin-bottom: 5px;"><input type=text name="email" size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Address          : </td>
+<td style="margin-bottom: 5px;"><textarea rows=3 cols=15 name="address" size=15></textarea></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Password          : </td>
+<td style="margin-bottom: 5px;"><input type=password name="pwd" size=15></td>
+</tr>
+<tr>
+<td style="margin-bottom: 5px;">Confirm Password  : </td>
+<td style="margin-bottom: 5px;"><input type=password name="pwd1" size=15></td>
+</tr></h3>
+</table>
+<br><br>
+
+
+<input type=submit value="submit">
+<input type=reset value="reset">
+</center>
+</form>
+</div>
+    </div>
+    <!-- end of center content -->
+    <div class="right_content">
+     <br><br><br>
+    </div>
+    <!-- end of right content -->
+  </div>
+  <!-- end of main content -->
+  </br></br>
+  <div class="footer">
+    <br><br>
+    <center> All Rights Reserved 2008</center>
+      </div>
+
+<!-- end of main_container -->
+</body>
+</html>

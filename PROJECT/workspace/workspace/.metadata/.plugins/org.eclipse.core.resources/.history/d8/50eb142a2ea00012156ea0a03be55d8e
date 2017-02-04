@@ -1,0 +1,74 @@
+<%@ page import="java.sql.*"%>
+<%@ page import="java.io.*"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.lang.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Books</title>
+</head>
+<body>
+  <div style="float:right;font-size:14px;">
+ <%  Object c=session.getAttribute("admin");
+if(c!=null)
+	{
+	out.print("Welcome  " +session.getAttribute("admin").toString());
+	out.print(" ,  <a href='logout.jsp'>Logout</a>");
+	%>
+	</div>
+<br><br><br><br><br><center>
+<a href="users.jsp">View Users</a>
+<a href="viewbooks.jsp">View Books</a>
+<%
+String username = request.getParameter("username");
+String name = request.getParameter("name");
+String gender = request.getParameter("gender");
+String pro = request.getParameter("pro");
+String mobile = request.getParameter("phone1");
+String email = request.getParameter("email");
+String password = request.getParameter("pwd");
+int age = Integer.parseInt(request.getParameter("age"));
+String address = request.getParameter("address");
+int count=0;
+int i=1;
+int check=0;
+try{
+    Connection con1=null;
+    Class.forName("com.ibm.db2.jcc.DB2Driver").newInstance(); 
+    con1=DriverManager.getConnection("jdbc:db2://localhost:50000/BOOKS","VINIT","vinit");
+    PreparedStatement ps=con1.prepareStatement("insert into USERS values(?,?,?,?,?,?,?,?,?,?)");
+		ps.setString(1,username);
+		ps.setString(2,password);
+		ps.setString(3,"Corporate");
+		ps.setString(9,pro);
+		ps.setInt(4,age);
+		ps.setString(5,gender);
+		ps.setString(6,mobile);
+		ps.setString(7,email);
+		ps.setString(8,address);
+		ps.setString(10,name);
+		
+		
+    int n=ps.executeUpdate();
+		if(n>0)
+		   response.sendRedirect("users.jsp");
+		else
+			out.println("Not Successful"); 
+    ps.close();
+    con1.close();
+    }
+
+catch(Exception ex){
+    out.println(ex);
+}
+%>
+</body>
+</html>
+<%
+}
+else
+{
+out.println("Please Login");
+}
+%>
